@@ -524,7 +524,7 @@ export function ConsolePage() {
       </div>
       <div className="content-main">
         <div className="content-logs">
-          <div className="content-block events">
+          {/* <div className="content-block events">
             <div className="visualization">
               <div className="visualization-entry client">
                 <canvas ref={clientCanvasRef} />
@@ -597,7 +597,7 @@ export function ConsolePage() {
                 );
               })}
             </div>
-          </div>
+          </div> */}
           <div className="content-block conversation">
             <div className="content-block-title">conversation</div>
             <div className="content-block-body" data-conversation-content>
@@ -689,40 +689,6 @@ export function ConsolePage() {
                 isConnected ? disconnectConversation : connectConversation
               }
             />
-          </div>
-        </div>
-        <div className="content-right">
-          <div className="content-block map">
-            <div className="content-block-title">get_weather()</div>
-            <div className="content-block-title bottom">
-              {marker?.location || 'not yet retrieved'}
-              {!!marker?.temperature && (
-                <>
-                  <br />
-                  🌡️ {marker.temperature.value} {marker.temperature.units}
-                </>
-              )}
-              {!!marker?.wind_speed && (
-                <>
-                  {' '}
-                  🍃 {marker.wind_speed.value} {marker.wind_speed.units}
-                </>
-              )}
-            </div>
-            <div className="content-block-body full">
-              {coords && (
-                <Map
-                  center={[coords.lat, coords.lng]}
-                  location={coords.location}
-                />
-              )}
-            </div>
-          </div>
-          <div className="content-block kv">
-            <div className="content-block-title">set_memory()</div>
-            <div className="content-block-body content-kv">
-              {JSON.stringify(memoryKv, null, 2)}
-            </div>
           </div>
         </div>
       </div>
