@@ -9,28 +9,11 @@ import { WavRecorder, WavStreamPlayer } from '../lib/wavtools/index.js';
 import { instructions } from '../utils/conversation_config.js';
 import { WavRenderer } from '../utils/wav_renderer';
 
-import { X, Edit, Zap } from 'react-feather';
+import { X, Zap } from 'react-feather';
 import { Button } from '../components/button/Button';
 import { Toggle } from '../components/toggle/Toggle';
 
 import './ConsolePage.scss';
-
-/**
- * Type for result from get_weather() function call
- */
-interface Coordinates {
-  lat: number;
-  lng: number;
-  location?: string;
-  temperature?: {
-    value: number;
-    units: string;
-  };
-  wind_speed?: {
-    value: number;
-    units: string;
-  };
-}
 
 /**
  * Type for all event logs
@@ -44,19 +27,6 @@ interface RealtimeEvent {
 
 export function ConsolePage() {
   /**
-   * Ask user for API Key
-   * If we're using the local relay server, we don't need this
-   */
-  const apiKey = LOCAL_RELAY_SERVER_URL
-    ? ''
-    : localStorage.getItem('tmp::voice_api_key') ||
-      prompt('OpenAI API Key') ||
-      '';
-  if (apiKey !== '') {
-    localStorage.setItem('tmp::voice_api_key', apiKey);
-  }
-
-  /**
    * Instantiate:
    * - WavRecorder (speech input)
    * - WavStreamPlayer (speech output)
@@ -69,14 +39,7 @@ export function ConsolePage() {
     new WavStreamPlayer({ sampleRate: 24000 })
   );
   const clientRef = useRef<RealtimeClient>(
-    new RealtimeClient(
-      LOCAL_RELAY_SERVER_URL
-        ? { url: LOCAL_RELAY_SERVER_URL }
-        : {
-            apiKey: apiKey,
-            dangerouslyAllowAPIKeyInBrowser: true,
-          }
-    )
+    new RealtimeClient({ url: LOCAL_RELAY_SERVER_URL })
   );
 
   /**
@@ -388,17 +351,6 @@ export function ConsolePage() {
         <div className="content-title">
           <img src="/openai-logomark.svg" />
           <span>realtime console</span>
-        </div>
-        <div className="content-api-key">
-          {!LOCAL_RELAY_SERVER_URL && (
-            <Button
-              icon={Edit}
-              iconPosition="end"
-              buttonStyle="flush"
-              label={`api key: ${apiKey.slice(0, 3)}...`}
-              onClick={() => resetAPIKey()}
-            />
-          )}
         </div>
       </div>
       <div className="content-main">
