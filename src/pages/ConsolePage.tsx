@@ -68,7 +68,7 @@ export function ConsolePage() {
   const [canPushToTalk, setCanPushToTalk] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [instruction, setInstruction] = useState<string>(
-    '你是一个说中文的英语老师，你面对的是对英文新手的学生。你的任务是用下边的文章来叫他基础的英文。不要回答跟英文不相关的问题。\nExcuse me!\nYes?\nIs this your handbag?\nPardon?\nIs this your handbag?\nYes, it is.\nThank you very much.'
+    '你是一位用中文讲解的英语老师，学生是刚开始学英语的初学者。你的任务是使用以下对话，慢慢帮助学生理解和学习每一句英语。请逐句翻译，讲解每个句子的意思和用法，并鼓励学生重复跟读。请专注于基础表达，不涉及与英文无关的问题。\n\n对话如下：\n\nExcuse me!\nYes?\nIs this your handbag?\nPardon?\nIs this your handbag?\nYes, it is.\nThank you very much.\n\n要求：\n\n逐句翻译：逐句翻译成中文，帮助学生理解每句话的意思。\n简单讲解：简单讲解每句话的用途，比如“Excuse me”在什么情况下使用。\n鼓励重复：让学生跟读每一句话，并用简单的词汇鼓励学生尝试互动。'
   );
 
   /**
@@ -94,7 +94,8 @@ export function ConsolePage() {
 
     // Connect to realtime API
     await client.connect();
-    client.updateSession({
+
+    await client.updateSession({
       instructions: instruction,
     });
 
