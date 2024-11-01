@@ -67,18 +67,9 @@ export function ConsolePage() {
   const [isConnected, setIsConnected] = useState(false);
   const [canPushToTalk, setCanPushToTalk] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-
-  /**
-   * When you click the API key
-   */
-  const resetAPIKey = useCallback(() => {
-    const apiKey = prompt('OpenAI API Key');
-    if (apiKey !== null) {
-      localStorage.clear();
-      localStorage.setItem('tmp::voice_api_key', apiKey);
-      window.location.reload();
-    }
-  }, []);
+  const [instruction, setInstruction] = useState<string>(
+    '你是一个说中文的英语老师，你面对的是对英文新手的学生。你的任务是用下边的文章来叫他基础的英文。不要回答跟英文不相关的问题。\nExcuse me!\nYes?\nIs this your handbag?\nPardon?\nIs this your handbag?\nYes, it is.\nThank you very much.'
+  );
 
   /**
    * Connect to conversation:
@@ -103,18 +94,14 @@ export function ConsolePage() {
 
     // Connect to realtime API
     await client.connect();
-    client.sendUserMessageContent([
-      {
-        type: `input_text`,
-        text: `Hello!`,
-        // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
-      },
-    ]);
+    client.updateSession({
+      instructions: instruction,
+    });
 
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
     }
-  }, []);
+  }, [instruction]);
 
   /**
    * Disconnect and reset conversation state
@@ -355,6 +342,18 @@ export function ConsolePage() {
       </div>
       <div className="content-main">
         <div className="content-logs">
+          <div className="content-block instruction">
+            <div className="content-block-title">Instructions</div>
+            <div className="content-block-body">
+              <textarea
+                id="instruction"
+                value={instruction}
+                onChange={(e) => setInstruction(e.target.value)}
+                placeholder="Enter your instructions here..."
+                style={{ width: '100%', height: '100px' }}
+              />
+            </div>
+          </div>
           <div className="content-block conversation">
             <div className="content-block-title">conversation</div>
             <div className="content-block-body" data-conversation-content>
