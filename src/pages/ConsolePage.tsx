@@ -351,7 +351,6 @@ export function ConsolePage() {
                 value={instruction}
                 onChange={(e) => setInstruction(e.target.value)}
                 placeholder="Enter your instructions here..."
-                style={{ width: '100%', height: '100px' }}
               />
             </div>
           </div>
