@@ -93,8 +93,9 @@ export function ConsolePage() {
 
     // Connect to realtime API
     await client.connect();
+    await client.waitForSessionCreated();
 
-    await client.updateSession({
+    client.updateSession({
       instructions: instruction,
     });
 
@@ -295,6 +296,10 @@ export function ConsolePage() {
     // Set transcription, otherwise we don't get user transcriptions back
     client.updateSession({ input_audio_transcription: { model: 'whisper-1' } });
 
+    client.on('session.updated', (session: any) => {
+      console.log('session.updated', session);
+    });
+
     // handle realtime events from client + server for event logging
     client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
       setRealtimeEvents((realtimeEvents) => {
@@ -338,7 +343,7 @@ export function ConsolePage() {
       // cleanup; resets to defaults
       client.reset();
     };
-  }, []);
+  }, [isConnected]);
 
   /**
    * Render the application
