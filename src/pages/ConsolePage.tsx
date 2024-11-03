@@ -345,12 +345,6 @@ export function ConsolePage() {
    */
   return (
     <div data-component="ConsolePage">
-      <div className="content-top">
-        <div className="content-title">
-          <img src="/openai-logomark.svg" />
-          <span>realtime console</span>
-        </div>
-      </div>
       <div className="content-main">
         <div className="content-logs">
           <div className="content-block instruction">
@@ -362,11 +356,11 @@ export function ConsolePage() {
                 onChange={(e) => setInstruction(e.target.value)}
                 placeholder="Enter your instructions here..."
               />
-              <Button label="Save" onClick={saveInstructions} />
+              <Button label="保存" onClick={saveInstructions} />
             </div>
           </div>
           <div className="content-block conversation">
-            <div className="content-block-title">conversation</div>
+            <div className="content-block-title">对话</div>
             <div className="content-block-body" data-conversation-content>
               {!items.length && `awaiting connection...`}
               {items.map((conversationItem, i) => {
@@ -432,7 +426,7 @@ export function ConsolePage() {
           <div className="content-actions">
             <Toggle
               defaultValue={false}
-              labels={['manual', 'vad']}
+              labels={['手动', '实时']}
               values={['none', 'server_vad']}
               onChange={(_, value) => changeTurnEndType(value)}
             />
@@ -448,7 +442,7 @@ export function ConsolePage() {
             )}
             <div className="spacer" />
             <Button
-              label={isConnected ? 'disconnect' : 'connect'}
+              label={isConnected ? '断开' : '连接'}
               iconPosition={isConnected ? 'end' : 'start'}
               icon={isConnected ? X : Zap}
               buttonStyle={isConnected ? 'regular' : 'action'}
