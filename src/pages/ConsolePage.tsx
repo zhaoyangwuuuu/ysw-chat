@@ -174,6 +174,16 @@ export function ConsolePage() {
   };
 
   /**
+   * Save the updated instructions
+   */
+  const saveInstructions = useCallback(async () => {
+    const client = clientRef.current;
+    await client.updateSession({
+      instructions: instruction,
+    });
+  }, [instruction]);
+
+  /**
    * Auto-scroll the event logs
    */
   useEffect(() => {
@@ -344,7 +354,7 @@ export function ConsolePage() {
       <div className="content-main">
         <div className="content-logs">
           <div className="content-block instruction">
-            <div className="content-block-title">Instructions</div>
+            <div className="content-block-title">指令</div>
             <div className="content-block-body">
               <textarea
                 id="instruction"
@@ -352,6 +362,7 @@ export function ConsolePage() {
                 onChange={(e) => setInstruction(e.target.value)}
                 placeholder="Enter your instructions here..."
               />
+              <Button label="Save" onClick={saveInstructions} />
             </div>
           </div>
           <div className="content-block conversation">
