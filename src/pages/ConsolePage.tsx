@@ -103,7 +103,11 @@ export function ConsolePage() {
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
       client.updateSession({
-        turn_detection: { type: 'server_vad', silence_duration_ms: 1500 },
+        turn_detection: {
+          type: 'server_vad',
+          silence_duration_ms: 1500,
+          threshold: 0.7,
+        },
       });
     }
   }, [instruction]);
@@ -173,7 +177,7 @@ export function ConsolePage() {
       turn_detection:
         value === 'none'
           ? null
-          : { type: 'server_vad', silence_duration_ms: 1500 },
+          : { type: 'server_vad', silence_duration_ms: 1500, threshold: 0.7 },
     });
     if (value === 'server_vad' && client.isConnected()) {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
