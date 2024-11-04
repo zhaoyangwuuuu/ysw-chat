@@ -98,7 +98,6 @@ export function ConsolePage() {
     client.updateSession({
       instructions: instruction,
       temperature: 0.7,
-      max_response_output_tokens: 300,
     });
 
     if (client.getTurnDetectionType() === 'server_vad') {
