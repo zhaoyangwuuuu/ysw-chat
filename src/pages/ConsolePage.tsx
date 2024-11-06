@@ -14,16 +14,6 @@ import { Toggle } from '../components/toggle/Toggle';
 
 import './ConsolePage.scss';
 
-/**
- * Type for all event logs
- */
-interface RealtimeEvent {
-  time: string;
-  source: 'client' | 'server';
-  count?: number;
-  event: { [key: string]: any };
-}
-
 export function ConsolePage() {
   /**
    * Instantiate:
@@ -49,20 +39,15 @@ export function ConsolePage() {
    */
   const clientCanvasRef = useRef<HTMLCanvasElement>(null);
   const serverCanvasRef = useRef<HTMLCanvasElement>(null);
-  const eventsScrollHeightRef = useRef(0);
-  const eventsScrollRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef<string>(new Date().toISOString());
 
   /**
    * All of our variables for displaying application state
    * - items are all conversation items (dialog)
-   * - realtimeEvents are event logs, which can be expanded
    * - memoryKv is for set_memory() function
    * - coords, marker are for get_weather() function
    */
   const [items, setItems] = useState<ItemType[]>([]);
-  const [realtimeEvents, setRealtimeEvents] = useState<RealtimeEvent[]>([]);
-
   const [isConnected, setIsConnected] = useState(false);
   const [canPushToTalk, setCanPushToTalk] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
@@ -82,7 +67,6 @@ export function ConsolePage() {
     // Set state variables
     startTimeRef.current = new Date().toISOString();
     setIsConnected(true);
-    setRealtimeEvents([]);
     setItems(client.conversation.getItems());
 
     // Connect to microphone
@@ -117,7 +101,6 @@ export function ConsolePage() {
    */
   const disconnectConversation = useCallback(async () => {
     setIsConnected(false);
-    setRealtimeEvents([]);
     setItems([]);
 
     const client = clientRef.current;
@@ -194,21 +177,6 @@ export function ConsolePage() {
       instructions: instruction,
     });
   }, [instruction]);
-
-  /**
-   * Auto-scroll the event logs
-   */
-  useEffect(() => {
-    if (eventsScrollRef.current) {
-      const eventsEl = eventsScrollRef.current;
-      const scrollHeight = eventsEl.scrollHeight;
-      // Only scroll if height has just changed
-      if (scrollHeight !== eventsScrollHeightRef.current) {
-        eventsEl.scrollTop = scrollHeight;
-        eventsScrollHeightRef.current = scrollHeight;
-      }
-    }
-  }, [realtimeEvents]);
 
   /**
    * Auto-scroll the conversation logs
@@ -311,19 +279,6 @@ export function ConsolePage() {
       console.log('session.updated', session);
     });
 
-    // handle realtime events from client + server for event logging
-    client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
-      setRealtimeEvents((realtimeEvents) => {
-        const lastEvent = realtimeEvents[realtimeEvents.length - 1];
-        if (lastEvent?.event.type === realtimeEvent.event.type) {
-          // if we receive multiple events in a row, aggregate them for display purposes
-          lastEvent.count = (lastEvent.count || 0) + 1;
-          return realtimeEvents.slice(0, -1).concat(lastEvent);
-        } else {
-          return realtimeEvents.concat(realtimeEvent);
-        }
-      });
-    });
     client.on('error', (event: any) => console.error(event));
     client.on('conversation.interrupted', async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
